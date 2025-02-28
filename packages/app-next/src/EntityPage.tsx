@@ -14,25 +14,15 @@
  * limitations under the License.
  */
 
-import React, { useCallback } from 'react';
+import React from 'react';
 
 import Grid from '@material-ui/core/Grid';
-import Tooltip from '@material-ui/core/Tooltip';
-import IconButton from '@material-ui/core/IconButton';
-import FileCopyIcon from '@material-ui/icons/FileCopy';
 import { makeStyles } from '@material-ui/core/styles';
 
-import {
-  alertApiRef,
-  createFrontendModule,
-  useApi,
-} from '@backstage/frontend-plugin-api';
-
-import { useEntity } from '@backstage/plugin-catalog-react';
+import { createFrontendModule } from '@backstage/frontend-plugin-api';
 import {
   EntityContentLayoutBlueprint,
   EntityContentLayoutProps,
-  EntityHeaderBlueprint,
 } from '@backstage/plugin-catalog-react/alpha';
 
 const useStyles = makeStyles(theme => ({
@@ -98,28 +88,6 @@ function StickyEntityContentOverviewLayout(props: EntityContentLayoutProps) {
   );
 }
 
-function CopyEntityNameToClipboard() {
-  const { entity } = useEntity();
-  const alertApi = useApi(alertApiRef);
-
-  const handleClick = useCallback(() => {
-    if (!entity) return;
-    window.navigator.clipboard
-      .writeText(entity.metadata.name)
-      .then(() =>
-        alertApi.post({ message: 'Entity name copied to clipboard' }),
-      );
-  }, [entity, alertApi]);
-
-  return (
-    <Tooltip title="Copy to clipboard">
-      <IconButton onClick={handleClick}>
-        <FileCopyIcon htmlColor="#fff" />
-      </IconButton>
-    </Tooltip>
-  );
-}
-
 export const customEntityContentOverviewLayoutModule = createFrontendModule({
   pluginId: 'app',
   extensions: [
@@ -127,12 +95,6 @@ export const customEntityContentOverviewLayoutModule = createFrontendModule({
       name: 'sticky',
       params: {
         loader: async () => StickyEntityContentOverviewLayout,
-      },
-    }),
-    EntityHeaderBlueprint.make({
-      name: 'default',
-      params: {
-        title: { actions: [<CopyEntityNameToClipboard />] },
       },
     }),
   ],

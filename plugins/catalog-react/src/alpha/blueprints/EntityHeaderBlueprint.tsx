@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-import { ReactNode } from 'react';
 import {
   createExtensionBlueprint,
   coreExtensionData,
-  createExtensionDataRef,
   ExtensionBoundary,
 } from '@backstage/frontend-plugin-api';
 import {
@@ -26,76 +24,29 @@ import {
   entityFilterFunctionDataRef,
 } from './extensionData';
 
-const entityHeaderTitleActionsDataRef = createExtensionDataRef<
-  ReactNode | { actions: ReactNode[] }
->().with({ id: 'entity-header.titleActions' });
-
-const entityHeaderSubtitleDataRef = createExtensionDataRef<ReactNode>().with({
-  id: 'entity-header.subtitle',
-});
-
 /** @alpha */
 export const EntityHeaderBlueprint = createExtensionBlueprint({
   kind: 'entity-header',
-  attachTo: { id: 'page:catalog/entity', input: 'headers' },
+  attachTo: { id: 'page:catalog/entity', input: 'header' },
+  dataRefs: {
+    element: coreExtensionData.reactElement,
+  },
   output: [
     entityFilterFunctionDataRef.optional(),
     entityFilterExpressionDataRef.optional(),
     coreExtensionData.reactElement.optional(),
-    entityHeaderTitleActionsDataRef.optional(),
-    entityHeaderSubtitleDataRef.optional(),
   ],
-  dataRefs: {
-    filterFunction: entityFilterFunctionDataRef,
-    filterExpression: entityFilterExpressionDataRef,
-    element: coreExtensionData.reactElement,
-    title: entityHeaderTitleActionsDataRef,
-    subtitle: entityHeaderSubtitleDataRef,
-  },
-  config: {
-    schema: {
-      filter: z => z.string().optional(),
-    },
-  },
   *factory(
-    params:
-      | {
-          defaultFilter?:
-            | typeof entityFilterFunctionDataRef.T
-            | typeof entityFilterExpressionDataRef.T;
-          loader: () => Promise<JSX.Element>;
-        }
-      | {
-          defaultFilter?:
-            | typeof entityFilterFunctionDataRef.T
-            | typeof entityFilterExpressionDataRef.T;
-          title?: ReactNode | { actions: ReactNode[] };
-          subtitle?: ReactNode;
-        },
-    { config, node },
+    params: {
+      loader: () => Promise<JSX.Element>;
+    },
+    { node },
   ) {
-    const { defaultFilter } = params;
-
-    if (config.filter) {
-      yield entityFilterExpressionDataRef(config.filter);
-    } else if (typeof defaultFilter === 'string') {
-      yield entityFilterExpressionDataRef(defaultFilter);
-    } else if (typeof defaultFilter === 'function') {
-      yield entityFilterFunctionDataRef(defaultFilter);
-    }
-
-    if ('loader' in params) {
+    const { loader } = params;
+    if (loader) {
       yield coreExtensionData.reactElement(
-        ExtensionBoundary.lazy(node, params.loader),
+        ExtensionBoundary.lazy(node, loader),
       );
-    }
-
-    if ('title' in params && params.title) {
-      yield entityHeaderTitleActionsDataRef(params.title);
-    }
-
-    if ('subtitle' in params && params.subtitle) {
-      yield entityHeaderSubtitleDataRef(params.subtitle);
     }
   },
 });
