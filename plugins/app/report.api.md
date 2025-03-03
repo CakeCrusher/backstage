@@ -398,6 +398,29 @@ const appPlugin: FrontendPlugin<
         loader: () => Promise<ComponentType<SignInPageProps>>;
       };
     }>;
+    'app-root-element:app/dialog-display': ExtensionDefinition<{
+      config: {};
+      configInput: {};
+      output: ConfigurableExtensionDataRef<
+        JSX_2.Element,
+        'core.reactElement',
+        {}
+      >;
+      inputs: {
+        [x: string]: ExtensionInput<
+          AnyExtensionDataRef,
+          {
+            optional: boolean;
+            singleton: boolean;
+          }
+        >;
+      };
+      kind: 'app-root-element';
+      name: 'dialog-display';
+      params: {
+        element: JSX.Element | (() => JSX.Element);
+      };
+    }>;
     'app-root-element:app/oauth-request-dialog': ExtensionDefinition<{
       kind: 'app-root-element';
       name: 'oauth-request-dialog';
@@ -448,6 +471,21 @@ const appPlugin: FrontendPlugin<
       name: 'alert-display';
       params: {
         element: JSX.Element | (() => JSX.Element);
+      };
+    }>;
+    'api:app/dialog': ExtensionDefinition<{
+      kind: 'api';
+      name: 'dialog';
+      config: {};
+      configInput: {};
+      output: ConfigurableExtensionDataRef<
+        AnyApiFactory,
+        'core.api.factory',
+        {}
+      >;
+      inputs: {};
+      params: {
+        factory: AnyApiFactory;
       };
     }>;
     'api:app/discovery': ExtensionDefinition<{
