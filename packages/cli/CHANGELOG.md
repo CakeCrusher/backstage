@@ -1,5 +1,27 @@
 # @backstage/cli
 
+## 0.31.0-next.1
+
+### Minor Changes
+
+- 5b70679: **BREAKING**: ESLint warnings no longer trigger system exit codes like errors do.
+
+  Set the max number of warnings to `-1` during linting to enable the gradual adoption of new ESLint rules. To restore the previous behavior, include the `--max-warnings 0` flag in the `backstage-cli <repo|package> lint` command.
+
+### Patch Changes
+
+- Updated dependencies
+  - @backstage/catalog-model@1.7.3
+  - @backstage/cli-common@0.1.15
+  - @backstage/cli-node@0.2.13
+  - @backstage/config@1.3.2
+  - @backstage/config-loader@1.9.6
+  - @backstage/errors@1.2.7
+  - @backstage/eslint-plugin@0.1.10
+  - @backstage/integration@1.16.1
+  - @backstage/release-manifests@0.0.12
+  - @backstage/types@1.2.1
+
 ## 0.30.1-next.0
 
 ### Patch Changes
